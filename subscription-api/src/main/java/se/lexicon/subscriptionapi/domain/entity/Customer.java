@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import se.lexicon.subscriptionapi.domain.constant.Role;
 
 import java.time.LocalDateTime;
@@ -15,16 +18,17 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"customerDetail", "password", "roles"})
+@ToString(exclude = {"customerDetail", "password", "roles", "subscriptions"})
 @Entity
 @Table(name = "customers")
+@EntityListeners(AuditingEntityListener.class)
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
@@ -54,12 +58,13 @@ public class Customer {
     @JoinColumn(name = "customer_detail_id")
     private CustomerDetail customerDetail;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = false)
+    private Set<Subscription> subscriptions = new HashSet<>();
+
+    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
