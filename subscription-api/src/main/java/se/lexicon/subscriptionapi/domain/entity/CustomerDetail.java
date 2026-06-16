@@ -3,6 +3,9 @@ package se.lexicon.subscriptionapi.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +16,7 @@ import java.time.LocalDateTime;
 @ToString(exclude = "customer")
 @Entity
 @Table(name = "customer_details")
+@EntityListeners(AuditingEntityListener.class)
 public class CustomerDetail {
 
     @Id
@@ -32,11 +36,10 @@ public class CustomerDetail {
     @OneToOne(mappedBy = "customerDetail")
     private Customer customer;
 
+    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
