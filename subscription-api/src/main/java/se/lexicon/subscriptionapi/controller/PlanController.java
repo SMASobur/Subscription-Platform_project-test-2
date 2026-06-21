@@ -47,6 +47,13 @@ public class PlanController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping
+    @Operation(summary = "Get all plans (active and inactive)", description = "Requires JWT.\n\nRoles: ADMIN")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PlanResponse>> findAll() {
+        return ResponseEntity.ok(planService.findAll());
+    }
+
     @GetMapping("/active")
     @Operation(summary = "Get all active plans", description = "Requires JWT.\n\nRoles: USER, ADMIN")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -59,5 +66,12 @@ public class PlanController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<PlanResponse>> findByServiceType(@RequestParam ServiceType type) {
         return ResponseEntity.ok(planService.findByServiceType(type));
+    }
+
+    @GetMapping("/operator/{operatorId}")
+    @Operation(summary = "Get active plans by operator ID", description = "Requires JWT.\n\nRoles: USER, ADMIN")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<List<PlanResponse>> findByOperator(@PathVariable Long operatorId) {
+        return ResponseEntity.ok(planService.findByOperator(operatorId));
     }
 }
