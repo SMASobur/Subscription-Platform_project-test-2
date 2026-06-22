@@ -29,6 +29,7 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         seedAdminUser();
         seedRegularUser();
+        seedRegularUser01();
         seedOperatorsAndPlans();
     }
 
@@ -59,6 +60,20 @@ public class DataSeeder implements CommandLineRunner {
             System.out.println("[DATA_SEED] Regular user created: " + userEmail);
         }
     }
+    private void seedRegularUser01() {
+        String userEmail = "user01@example.com";
+        if (!customerRepository.existsByEmail(userEmail)) {
+            Customer user = new Customer();
+            user.setEmail(userEmail);
+            user.setFirstName("User01");
+            user.setLastName("Userson");
+            user.setPassword(passwordEncoder.encode("password01"));
+            user.setRoles(Set.of(Role.ROLE_USER));
+            customerRepository.save(user);
+            System.out.println("[DATA_SEED] Regular user created: " + userEmail);
+        }
+    }
+
 
     private void seedOperatorsAndPlans() {
         if (operatorRepository.count() > 0) {
