@@ -1,4 +1,4 @@
-package se.lexicon.subscriptionapi.dto.request;
+package se.lexicon.subscriptionapi.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.Map;
